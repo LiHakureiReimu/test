@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>周年庆活动打卡地图</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Orbitron', 'Microsoft YaHei', sans-serif;
+            background: #0a0e1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        
+        .map-container {
+            width: 1200px;
+            height: 800px;
+            background: linear-gradient(135deg, #0f1729 0%, #1a2332 100%);
+            position: relative;
+            border: 2px solid #00d4ff;
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.3),
+                        inset 0 0 100px rgba(0, 212, 255, 0.1);
+            overflow: hidden;
+        }
+        
+        /* 背景网格效果 */
+        .grid-background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: grid-move 20s linear infinite;
+        }
+        
+        @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
+        /* 标题区域 */
+        .title {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .title h1 {
+            font-size: 42px;
+            font-weight: 900;
+            background: linear-gradient(45deg, #00d4ff, #00ff88, #00d4ff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            animation: gradient-shift 3s ease infinite;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+        
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .subtitle {
+            color: #00d4ff;
+            font-size: 16px;
+            margin-top: 10px;
+            opacity: 0.8;
+            letter-spacing: 3px;
+        }
+        
+        /* 连接线 */
+        .connection-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .connection-line {
+            stroke: #00d4ff;
+            stroke-width: 2;
+            fill: none;
+            stroke-dasharray: 5, 5;
+            animation: dash 20s linear infinite;
+            opacity: 0.3;
+        }
+        
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -100;
+            }
+        }
+        
+        /* 打卡点样式 */
+        .checkpoint {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .checkpoint:hover {
+            transform: scale(1.1);
+        }
+        
+        .checkpoint-inner {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        /* 六边形背景 */
+        .hexagon {
+            width: 140px;
+            height: 140px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #1a3a52 0%, #2a4a62 100%);
+            clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+            box-shadow: inset 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+        
+        .hexagon::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent, rgba(0, 212, 255, 0.3));
+            clip-path: inherit;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
+        }
+        
+        /* 编号圆圈 */
+        .checkpoint-number {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #00d4ff, #00ff88);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #0a0e1a;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            z-index: 2;
+        }
+        
+        /* 打卡点名称 */
+        .checkpoint-name {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #00d4ff;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            white-space: nowrap;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+            background: rgba(10, 14, 26, 0.8);
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+        
+        /* 盖章区域 */
+        .stamp-area {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            border: 2px dashed rgba(0, 212, 255, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(10, 14, 26, 0.5);
+            z-index: 1;
+        }
+        
+        .stamp-text {
+            color: rgba(0, 212, 255, 0.3);
+            font-size: 12px;
+            text-align: center;
+        }
+        
+        /* 装饰性元素 */
+        .decoration-circle {
+            position: absolute;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            top: 100px;
+            right: 100px;
+            animation: rotate 30s linear infinite;
+        }
+        
+        .circle-2 {
+            width: 200px;
+            height: 200px;
+            bottom: 100px;
+            left: 80px;
+            animation: rotate -25s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 光效 */
+        .light-effect {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 30%, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        /* 位置设置 */
+        .checkpoint-1 { top: 150px; left: 200px; }
+        .checkpoint-2 { top: 150px; right: 200px; }
+        .checkpoint-3 { top: 350px; left: 50%; transform: translateX(-50%); }
+        .checkpoint-4 { bottom: 150px; left: 200px; }
+        .checkpoint-5 { bottom: 150px; right: 200px; }
+    </style>
+</head>
+<body>
+    <div class="map-container" id="mapContainer">
+        <!-- 网格背景 -->
+        <div class="grid-background"></div>
+        
+        <!-- 光效 -->
+        <div class="light-effect"></div>
+        
+        <!-- 装饰圆圈 -->
+        <div class="decoration-circle circle-1"></div>
+        <div class="decoration-circle circle-2"></div>
+        
+        <!-- 连接线 -->
+        <svg class="connection-lines" xmlns="http://www.w3.org/2000/svg">
+            <path class="connection-line" d="M 290 240 L 510 440 L 290 640" />
+            <path class="connection-line" d="M 910 240 L 690 440 L 910 640" />
+            <path class="connection-line" d="M 290 240 L 910 240" />
+            <path class="connection-line" d="M 290 640 L 910 640" />
+        </svg>
+        
+        <!-- 标题 -->
+        <div class="title">
+            <h1>周年庆打卡地图</h1>
+            <div class="subtitle">ANNIVERSARY CHECK-IN MAP</div>
+        </div>
+        
+        <!-- 打卡点1：粘币游戏 -->
+        <div class="checkpoint checkpoint-1">
+            <div class="checkpoint-inner">
+                <div class="hexagon"></div>
+                <div class="checkpoint-number">1</div>
+                <div class="stamp-area">
+                    <div class="stamp-text">盖章处</div>
+                </div>
+                <div class="checkpoint-name">粘币游戏</div>
+            </div>
+        </div>
+        
+        <!-- 打卡点2：淘趣循环市集 -->
+        <div class="checkpoint checkpoint-2">
+            <div class="checkpoint-inner">
+                <div class="hexagon"></div>
+                <div class="checkpoint-number">2</div>
+                <div class="stamp-area">
+                    <div class="stamp-text">盖章处</div>
+                </div>
+                <div class="checkpoint-name">淘趣循环市集</div>
+            </div>
+        </div>
+        
+        <!-- 打卡点3：框住时光·与你同行 -->
+        <div class="checkpoint checkpoint-3">
+            <div class="checkpoint-inner">
+                <div class="hexagon"></div>
+                <div class="checkpoint-number">3</div>
+                <div class="stamp-area">
+                    <div class="stamp-text">盖章处</div>
+                </div>
+                <div class="checkpoint-name">框住时光·与你同行</div>
+            </div>
+        </div>
+        
+        <!-- 打卡点4：快问快答 -->
+        <div class="checkpoint checkpoint-4">
+            <div class="checkpoint-inner">
+                <div class="hexagon"></div>
+                <div class="checkpoint-number">4</div>
+                <div class="stamp-area">
+                    <div class="stamp-text">盖章处</div>
+                </div>
+                <div class="checkpoint-name">快问快答</div>
+            </div>
+        </div>
+        
+        <!-- 打卡点5：量子纠缠瓶 -->
+        <div class="checkpoint checkpoint-5">
+            <div class="checkpoint-inner">
+                <div class="hexagon"></div>
+                <div class="checkpoint-number">5</div>
+                <div class="stamp-area">
+                    <div class="stamp-text">盖章处</div>
+                </div>
+                <div class="checkpoint-name">量子纠缠瓶</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
