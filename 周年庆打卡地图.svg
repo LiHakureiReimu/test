@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1600" height="1200" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景 -->
+    <rect width="1600" height="1200" fill="#0a0a2a"/>
+    
+    <!-- 网格线 -->
+    <defs>
+        <pattern id="grid" width="200" height="200" patternUnits="userSpaceOnUse">
+            <path d="M 200 0 L 0 0 0 200" fill="none" stroke="#1a4a8a" stroke-width="2" opacity="0.3"/>
+        </pattern>
+    </defs>
+    <rect width="1600" height="1200" fill="url(#grid)"/>
+    
+    <!-- 标题 -->
+    <text x="800" y="120" font-family="Arial, sans-serif" font-size="60" font-weight="bold" text-anchor="middle" fill="#00ffff">周年庆打卡地图</text>
+    <text x="800" y="180" font-family="Arial, sans-serif" font-size="30" text-anchor="middle" fill="#4a9eff">ANNUAL CELEBRATION CHECK-IN MAP</text>
+    
+    <!-- 打卡地点 -->
+    <!-- 粘币游戏 -->
+    <circle cx="300" cy="600" r="120" fill="none" stroke="#00ffff" stroke-width="6" opacity="0.6"/>
+    <circle cx="300" cy="600" r="80" fill="#1a4a8a" stroke="#00ffff" stroke-width="4"/>
+    <circle cx="300" cy="600" r="50" fill="#ffffff" stroke="#ff6b35" stroke-width="4"/>
+    <text x="300" y="605" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#ff6b35" font-weight="bold">盖章</text>
+    <text x="300" y="420" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#ffffff" font-weight="bold">粘币游戏</text>
+    <text x="300" y="460" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#4a9eff">STICKY COIN GAME</text>
+    <line x1="420" y1="600" x2="450" y2="600" stroke="#00ffff" stroke-width="4" opacity="0.6"/>
+    
+    <!-- 淘趣循环市集 -->
+    <circle cx="1300" cy="600" r="120" fill="none" stroke="#00ffff" stroke-width="6" opacity="0.6"/>
+    <circle cx="1300" cy="600" r="80" fill="#1a4a8a" stroke="#00ffff" stroke-width="4"/>
+    <circle cx="1300" cy="600" r="50" fill="#ffffff" stroke="#ff6b35" stroke-width="4"/>
+    <text x="1300" y="605" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#ff6b35" font-weight="bold">盖章</text>
+    <text x="1300" y="420" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#ffffff" font-weight="bold">淘趣循环市集</text>
+    <text x="1300" y="460" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#4a9eff">RECYCLE MARKET</text>
+    <line x1="1180" y1="600" x2="1150" y2="600" stroke="#00ffff" stroke-width="4" opacity="0.6"/>
+    
+    <!-- 框住时光·与你同行 -->
+    <circle cx="300" cy="400" r="120" fill="none" stroke="#00ffff" stroke-width="6" opacity="0.6"/>
+    <circle cx="300" cy="400" r="80" fill="#1a4a8a" stroke="#00ffff" stroke-width="4"/>
+    <circle cx="300" cy="400" r="50" fill="#ffffff" stroke="#ff6b35" stroke-width="4"/>
+    <text x="300" y="405" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#ff6b35" font-weight="bold">盖章</text>
+    <text x="300" y="220" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#ffffff" font-weight="bold">框住时光·与你同行</text>
+    <text x="300" y="260" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#4a9eff">FRAME TIME TOGETHER</text>
+    <line x1="420" y1="400" x2="450" y2="400" stroke="#00ffff" stroke-width="4" opacity="0.6"/>
+    
+    <!-- 快问快答 -->
+    <circle cx="1300" cy="400" r="120" fill="none" stroke="#00ffff" stroke-width="6" opacity="0.6"/>
+    <circle cx="1300" cy="400" r="80" fill="#1a4a8a" stroke="#00ffff" stroke-width="4"/>
+    <circle cx="1300" cy="400" r="50" fill="#ffffff" stroke="#ff6b35" stroke-width="4"/>
+    <text x="1300" y="405" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#ff6b35" font-weight="bold">盖章</text>
+    <text x="1300" y="220" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#ffffff" font-weight="bold">快问快答</text>
+    <text x="1300" y="260" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#4a9eff">QUICK Q&amp;A</text>
+    <line x1="1180" y1="400" x2="1150" y2="400" stroke="#00ffff" stroke-width="4" opacity="0.6"/>
+    
+    <!-- 量子纠缠瓶 -->
+    <circle cx="800" cy="200" r="120" fill="none" stroke="#00ffff" stroke-width="6" opacity="0.6"/>
+    <circle cx="800" cy="200" r="80" fill="#1a4a8a" stroke="#00ffff" stroke-width="4"/>
+    <circle cx="800" cy="200" r="50" fill="#ffffff" stroke="#ff6b35" stroke-width="4"/>
+    <text x="800" y="205" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#ff6b35" font-weight="bold">盖章</text>
+    <text x="800" y="20" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#ffffff" font-weight="bold">量子纠缠瓶</text>
+    <text x="800" y="60" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#4a9eff">QUANTUM BOTTLE</text>
+    <line x1="800" y1="320" x2="800" y2="350" stroke="#00ffff" stroke-width="4" opacity="0.6"/>
+    
+    <!-- 装饰元素 -->
+    <text x="100" y="800" font-family="Arial, sans-serif" font-size="60" text-anchor="middle" fill="#ff6b35">★</text>
+    <text x="150" y="780" font-family="Arial, sans-serif" font-size="30" text-anchor="middle" fill="#4a9eff">★</text>
+    <text x="1500" y="800" font-family="Arial, sans-serif" font-size="60" text-anchor="middle" fill="#ff6b35">★</text>
+    <text x="1450" y="780" font-family="Arial, sans-serif" font-size="30" text-anchor="middle" fill="#4a9eff">★</text>
+    
+    <!-- 底部文字 -->
+    <text x="800" y="50" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#ff6b35" font-weight="bold">完成所有打卡即可获得精美礼品</text>
+    
+    <!-- 装饰线条 -->
+    <line x1="50" y1="750" x2="250" y2="750" stroke="#00ffff" stroke-width="4"/>
+    <line x1="50" y1="730" x2="250" y2="730" stroke="#4a9eff" stroke-width="2"/>
+    <line x1="1350" y1="750" x2="1550" y2="750" stroke="#00ffff" stroke-width="4"/>
+    <line x1="1350" y1="730" x2="1550" y2="730" stroke="#4a9eff" stroke-width="2"/>
+</svg>

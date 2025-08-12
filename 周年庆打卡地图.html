@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>周年庆打卡地图</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #0a0a2a;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            color: white;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background-color: #0a0a2a;
+            border: 2px solid #00ffff;
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+        }
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .main-title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #00ffff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px #00ffff;
+        }
+        .subtitle {
+            font-size: 24px;
+            color: #4a9eff;
+            opacity: 0.8;
+        }
+        .map-container {
+            position: relative;
+            height: 800px;
+            background: 
+                linear-gradient(90deg, #1a4a8a 1px, transparent 1px),
+                linear-gradient(0deg, #1a4a8a 1px, transparent 1px);
+            background-size: 100px 100px;
+            background-position: 0 0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .location {
+            position: absolute;
+            width: 200px;
+            text-align: center;
+        }
+        .location-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .outer-ring {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border: 6px solid #00ffff;
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+        .inner-circle {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background-color: #1a4a8a;
+            border: 4px solid #00ffff;
+            border-radius: 50%;
+        }
+        .stamp-area {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: #ffffff;
+            border: 4px solid #ff6b35;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff6b35;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .location-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+        .location-name-en {
+            font-size: 14px;
+            color: #4a9eff;
+            opacity: 0.8;
+        }
+        .location-1 { top: 100px; left: 100px; }
+        .location-2 { top: 100px; right: 100px; }
+        .location-3 { top: 300px; left: 100px; }
+        .location-4 { top: 300px; right: 100px; }
+        .location-5 { top: 500px; left: 50%; transform: translateX(-50%); }
+        
+        .decoration {
+            position: absolute;
+            font-size: 40px;
+            color: #ff6b35;
+        }
+        .decoration-1 { top: 50px; left: 50px; }
+        .decoration-2 { top: 50px; right: 50px; }
+        .decoration-3 { top: 50px; left: 100px; font-size: 30px; color: #4a9eff; }
+        .decoration-4 { top: 50px; right: 100px; font-size: 30px; color: #4a9eff; }
+        
+        .bottom-text {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 20px;
+            color: #ff6b35;
+            font-weight: bold;
+        }
+        
+        .connection-line {
+            position: absolute;
+            background-color: #00ffff;
+            opacity: 0.6;
+        }
+        .line-1 { width: 50px; height: 4px; top: 160px; left: 220px; }
+        .line-2 { width: 50px; height: 4px; top: 160px; right: 220px; }
+        .line-3 { width: 50px; height: 4px; top: 360px; left: 220px; }
+        .line-4 { width: 50px; height: 4px; top: 360px; right: 220px; }
+        .line-5 { width: 4px; height: 50px; top: 620px; left: 50%; transform: translateX(-50%); }
+        
+        .download-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #00ffff;
+            color: #0a0a2a;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .download-btn:hover {
+            background-color: #4a9eff;
+        }
+    </style>
+</head>
+<body>
+    <button class="download-btn" onclick="downloadMap()">下载地图</button>
+    
+    <div class="container">
+        <div class="title">
+            <div class="main-title">周年庆打卡地图</div>
+            <div class="subtitle">ANNUAL CELEBRATION CHECK-IN MAP</div>
+        </div>
+        
+        <div class="map-container">
+            <!-- 装饰元素 -->
+            <div class="decoration decoration-1">★</div>
+            <div class="decoration decoration-2">★</div>
+            <div class="decoration decoration-3">★</div>
+            <div class="decoration decoration-4">★</div>
+            
+            <!-- 连接线 -->
+            <div class="connection-line line-1"></div>
+            <div class="connection-line line-2"></div>
+            <div class="connection-line line-3"></div>
+            <div class="connection-line line-4"></div>
+            <div class="connection-line line-5"></div>
+            
+            <!-- 打卡地点1：粘币游戏 -->
+            <div class="location location-1">
+                <div class="location-circle">
+                    <div class="outer-ring"></div>
+                    <div class="inner-circle"></div>
+                    <div class="stamp-area">盖章</div>
+                </div>
+                <div class="location-name">粘币游戏</div>
+                <div class="location-name-en">STICKY COIN GAME</div>
+            </div>
+            
+            <!-- 打卡地点2：淘趣循环市集 -->
+            <div class="location location-2">
+                <div class="location-circle">
+                    <div class="outer-ring"></div>
+                    <div class="inner-circle"></div>
+                    <div class="stamp-area">盖章</div>
+                </div>
+                <div class="location-name">淘趣循环市集</div>
+                <div class="location-name-en">RECYCLE MARKET</div>
+            </div>
+            
+            <!-- 打卡地点3：框住时光·与你同行 -->
+            <div class="location location-3">
+                <div class="location-circle">
+                    <div class="outer-ring"></div>
+                    <div class="inner-circle"></div>
+                    <div class="stamp-area">盖章</div>
+                </div>
+                <div class="location-name">框住时光·与你同行</div>
+                <div class="location-name-en">FRAME TIME TOGETHER</div>
+            </div>
+            
+            <!-- 打卡地点4：快问快答 -->
+            <div class="location location-4">
+                <div class="location-circle">
+                    <div class="outer-ring"></div>
+                    <div class="inner-circle"></div>
+                    <div class="stamp-area">盖章</div>
+                </div>
+                <div class="location-name">快问快答</div>
+                <div class="location-name-en">QUICK Q&A</div>
+            </div>
+            
+            <!-- 打卡地点5：量子纠缠瓶 -->
+            <div class="location location-5">
+                <div class="location-circle">
+                    <div class="outer-ring"></div>
+                    <div class="inner-circle"></div>
+                    <div class="stamp-area">盖章</div>
+                </div>
+                <div class="location-name">量子纠缠瓶</div>
+                <div class="location-name-en">QUANTUM BOTTLE</div>
+            </div>
+        </div>
+        
+        <div class="bottom-text">
+            完成所有打卡即可获得精美礼品
+        </div>
+    </div>
+    
+    <script>
+        function downloadMap() {
+            // 创建一个提示
+            alert('请使用浏览器的截图功能或按F12打开开发者工具，然后右键点击地图区域选择"截图"来保存为PNG文件。\n\n或者可以按Ctrl+Shift+I打开开发者工具，然后按Ctrl+Shift+P，输入"screenshot"来截图。');
+        }
+        
+        // 添加一些动画效果
+        document.addEventListener('DOMContentLoaded', function() {
+            const locations = document.querySelectorAll('.location');
+            locations.forEach((location, index) => {
+                location.style.animation = `fadeIn 0.5s ease-in-out ${index * 0.2}s both`;
+            });
+        });
+        
+        // 添加CSS动画
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            
+            .location-circle:hover .outer-ring {
+                animation: pulse 1s infinite;
+            }
+            
+            @keyframes pulse {
+                0% { transform: scale(1); opacity: 0.6; }
+                50% { transform: scale(1.1); opacity: 0.8; }
+                100% { transform: scale(1); opacity: 0.6; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
