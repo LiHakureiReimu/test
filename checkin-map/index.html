@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>周年庆 · 打卡地图</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Noto+Sans+SC:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-start: #0b1020;
+      --bg-end: #0f2240;
+      --grid: rgba(48, 120, 210, 0.16);
+      --primary: #39e1ff;
+      --primary-soft: rgba(57,225,255,0.25);
+      --accent: #7a5cff;
+      --accent-soft: rgba(122,92,255,0.25);
+      --pink: #ff4ecd;
+      --text: #e9f1ff;
+      --muted: #8aa4c8;
+      --shadow: 0 0 20px rgba(57,225,255,0.35), 0 0 40px rgba(122,92,255,0.25);
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: radial-gradient(100% 100% at 50% 0%, var(--bg-end) 0%, var(--bg-start) 60%);
+      color: var(--text);
+      font-family: 'Noto Sans SC', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    }
+    .page {
+      max-width: 1200px;
+      margin: 24px auto;
+      padding: 24px;
+    }
+    .sheet {
+      position: relative;
+      background: linear-gradient(180deg, rgba(12,18,40,0.85), rgba(6,10,26,0.9));
+      border: 1px solid rgba(112, 152, 255, 0.25);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      aspect-ratio: 210 / 148; /* A5 landscape printable; adjusts gracefully */
+    }
+    .sheet-header {
+      position: absolute;
+      inset: 16px 16px auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      z-index: 3;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-mark {
+      width: 40px; height: 40px;
+      background: conic-gradient(from 0deg, var(--primary), var(--accent), var(--pink), var(--primary));
+      border-radius: 8px;
+      filter: drop-shadow(0 0 10px rgba(57,225,255,0.5));
+      mask: radial-gradient(circle at 30% 30%, black 40%, transparent 41%);
+      border: 1px solid rgba(57,225,255,0.4);
+    }
+    .title {
+      display: grid;
+      line-height: 1.1;
+    }
+    .title span.top {
+      font-family: 'Orbitron', monospace;
+      letter-spacing: 0.12em;
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .title strong {
+      font-weight: 700;
+      font-size: clamp(20px, 3.8vw, 40px);
+      background: linear-gradient(90deg, #cfe9ff, #7be3ff, #b79aff);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+      text-shadow: 0 0 20px rgba(57,225,255,0.25);
+    }
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      border: 1px dashed rgba(122,92,255,0.4);
+      border-radius: 20px;
+      padding: 6px 10px;
+      background: rgba(20, 26, 55, 0.5);
+      box-shadow: inset 0 0 20px rgba(122,92,255,0.15);
+    }
+    .sheet-inner {
+      position: absolute; inset: 0;
+    }
+    .grid, .glow {
+      position: absolute; inset: 0;
+    }
+    .legend {
+      position: absolute;
+      right: 16px; bottom: 16px;
+      display: grid; gap: 6px;
+      z-index: 3;
+      font-size: 12px; color: var(--muted);
+      background: rgba(8,12,28,0.6);
+      border: 1px solid rgba(57,225,255,0.2);
+      border-radius: 10px;
+      padding: 8px 10px;
+      backdrop-filter: blur(4px);
+    }
+    .print-note { font-size: 11px; opacity: 0.8; }
+    .footer {
+      position: absolute; left: 16px; bottom: 16px; right: 16px;
+      display: flex; justify-content: space-between; align-items: center; gap: 8px;
+      z-index: 3; color: var(--muted); font-size: 12px;
+    }
+    .route-label { font-size: 10px; fill: #a9c4ff; letter-spacing: 0.08em; }
+    @media print {
+      body { background: white; }
+      .page { margin: 0; padding: 0; }
+      .sheet { box-shadow: none; border: none; border-radius: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="sheet" role="img" aria-label="周年庆活动打卡地图">
+      <div class="sheet-header">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true"></div>
+          <div class="title">
+            <span class="top">ANNIVERSARY CHECK-IN MAP</span>
+            <strong>周年庆 · 打卡地图</strong>
+          </div>
+        </div>
+        <div class="hint">到每个点完成任务后，请在对应的“盖章处”盖章</div>
+      </div>
+
+      <div class="sheet-inner">
+        <!-- Background Grid (SVG) -->
+        <svg class="grid" viewBox="0 0 1200 840" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="minorGrid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(48,120,210,0.15)" stroke-width="1" />
+            </pattern>
+            <pattern id="majorGrid" width="200" height="200" patternUnits="userSpaceOnUse">
+              <rect width="200" height="200" fill="url(#minorGrid)" />
+              <path d="M 200 0 L 0 0 0 200" fill="none" stroke="rgba(48,120,210,0.25)" stroke-width="1.5" />
+            </pattern>
+            <radialGradient id="bgGlow" cx="50%" cy="40%" r="70%">
+              <stop offset="0%" stop-color="#12204a" stop-opacity="0.7"/>
+              <stop offset="70%" stop-color="#0a1128" stop-opacity="0.2"/>
+              <stop offset="100%" stop-color="#050914" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="12" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="nodeGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="4" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#39e1ff"/>
+              <stop offset="50%" stop-color="#7a5cff"/>
+              <stop offset="100%" stop-color="#ff4ecd"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Soft gradient glow background -->
+          <rect width="1200" height="840" fill="url(#majorGrid)" />
+          <circle cx="300" cy="200" r="180" fill="url(#bgGlow)" />
+          <circle cx="920" cy="640" r="220" fill="url(#bgGlow)" />
+
+          <!-- Decorative tech arcs -->
+          <g opacity="0.35">
+            <path d="M200,740 C420,620 780,620 1000,740" fill="none" stroke="url(#routeGrad)" stroke-width="2" />
+            <path d="M180,620 C420,520 780,520 1020,620" fill="none" stroke="rgba(57,225,255,0.3)" stroke-width="1.5" stroke-dasharray="4 8" />
+            <path d="M160,520 C420,440 780,440 1040,520" fill="none" stroke="rgba(122,92,255,0.3)" stroke-width="1.5" stroke-dasharray="2 6" />
+          </g>
+
+          <!-- Route connecting the five spots -->
+          <g id="route" filter="url(#softGlow)">
+            <polyline points="260,200 480,280 720,240 860,420 980,300" fill="none" stroke="url(#routeGrad)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            <g>
+              <circle cx="260" cy="200" r="3" fill="#39e1ff" />
+              <circle cx="480" cy="280" r="3" fill="#51d1ff" />
+              <circle cx="720" cy="240" r="3" fill="#7a5cff" />
+              <circle cx="860" cy="420" r="3" fill="#a287ff" />
+              <circle cx="980" cy="300" r="3" fill="#ff4ecd" />
+            </g>
+          </g>
+
+          <!-- Nodes: five check-in spots -->
+          <g id="nodes">
+            <!-- 1 粘币游戏 -->
+            <g transform="translate(220,160)">
+              <circle cx="40" cy="40" r="34" fill="rgba(57,225,255,0.12)" stroke="#39e1ff" stroke-width="2" filter="url(#nodeGlow)" />
+              <circle cx="40" cy="40" r="22" fill="rgba(57,225,255,0.18)" stroke="rgba(57,225,255,0.6)" stroke-width="1" />
+              <text x="90" y="32" fill="#cfe9ff" font-size="18" font-weight="700">1 粘币游戏</text>
+              <text x="90" y="54" fill="#8fb6ff" font-size="12">完成后在右侧盖章</text>
+            </g>
+
+            <!-- 2 淘趣循环市集 -->
+            <g transform="translate(440,240)">
+              <circle cx="40" cy="40" r="34" fill="rgba(81,209,255,0.12)" stroke="#51d1ff" stroke-width="2" filter="url(#nodeGlow)" />
+              <circle cx="40" cy="40" r="22" fill="rgba(81,209,255,0.18)" stroke="rgba(81,209,255,0.6)" stroke-width="1" />
+              <text x="90" y="32" fill="#cfe9ff" font-size="18" font-weight="700">2 淘趣循环市集</text>
+              <text x="90" y="54" fill="#8fb6ff" font-size="12">完成后在右侧盖章</text>
+            </g>
+
+            <!-- 3 框住时光·与你同行 -->
+            <g transform="translate(680,200)">
+              <circle cx="40" cy="40" r="34" fill="rgba(122,92,255,0.12)" stroke="#7a5cff" stroke-width="2" filter="url(#nodeGlow)" />
+              <circle cx="40" cy="40" r="22" fill="rgba(122,92,255,0.18)" stroke="rgba(122,92,255,0.6)" stroke-width="1" />
+              <text x="90" y="32" fill="#dcd7ff" font-size="18" font-weight="700">3 框住时光·与你同行</text>
+              <text x="90" y="54" fill="#bdb3ff" font-size="12">完成后在右侧盖章</text>
+            </g>
+
+            <!-- 4 快问快答 -->
+            <g transform="translate(820,380)">
+              <circle cx="40" cy="40" r="34" fill="rgba(162,135,255,0.12)" stroke="#a287ff" stroke-width="2" filter="url(#nodeGlow)" />
+              <circle cx="40" cy="40" r="22" fill="rgba(162,135,255,0.18)" stroke="rgba(162,135,255,0.6)" stroke-width="1" />
+              <text x="90" y="32" fill="#e9deff" font-size="18" font-weight="700">4 快问快答</text>
+              <text x="90" y="54" fill="#cdbfff" font-size="12">完成后在右侧盖章</text>
+            </g>
+
+            <!-- 5 量子纠缠瓶 -->
+            <g transform="translate(940,260)">
+              <circle cx="40" cy="40" r="34" fill="rgba(255,78,205,0.12)" stroke="#ff4ecd" stroke-width="2" filter="url(#nodeGlow)" />
+              <circle cx="40" cy="40" r="22" fill="rgba(255,78,205,0.18)" stroke="rgba(255,78,205,0.6)" stroke-width="1" />
+              <text x="90" y="32" fill="#ffd7f3" font-size="18" font-weight="700">5 量子纠缠瓶</text>
+              <text x="90" y="54" fill="#ffb6ea" font-size="12">完成后在右侧盖章</text>
+            </g>
+          </g>
+
+          <!-- Stamp placeholders (盖章处) -->
+          <g id="stamps">
+            <!-- aligned to the right for easy stamping -->
+            <g transform="translate(930,80)">
+              <rect x="0" y="0" width="230" height="92" rx="12" fill="rgba(8,12,28,0.65)" stroke="rgba(57,225,255,0.25)" />
+              <circle cx="52" cy="46" r="30" fill="rgba(57,225,255,0.08)" stroke="#39e1ff" stroke-width="2" stroke-dasharray="6 6" />
+              <text x="100" y="38" font-size="16" fill="#cfe9ff" font-weight="700">1 粘币游戏</text>
+              <text x="100" y="62" font-size="12" fill="#8fb6ff">盖章处</text>
+            </g>
+
+            <g transform="translate(930,190)">
+              <rect x="0" y="0" width="230" height="92" rx="12" fill="rgba(8,12,28,0.65)" stroke="rgba(81,209,255,0.25)" />
+              <circle cx="52" cy="46" r="30" fill="rgba(81,209,255,0.08)" stroke="#51d1ff" stroke-width="2" stroke-dasharray="6 6" />
+              <text x="100" y="38" font-size="16" fill="#cfe9ff" font-weight="700">2 淘趣循环市集</text>
+              <text x="100" y="62" font-size="12" fill="#8fb6ff">盖章处</text>
+            </g>
+
+            <g transform="translate(930,300)">
+              <rect x="0" y="0" width="230" height="92" rx="12" fill="rgba(8,12,28,0.65)" stroke="rgba(122,92,255,0.25)" />
+              <circle cx="52" cy="46" r="30" fill="rgba(122,92,255,0.08)" stroke="#7a5cff" stroke-width="2" stroke-dasharray="6 6" />
+              <text x="100" y="38" font-size="16" fill="#e4dcff" font-weight="700">3 框住时光·与你同行</text>
+              <text x="100" y="62" font-size="12" fill="#c0b6ff">盖章处</text>
+            </g>
+
+            <g transform="translate(930,410)">
+              <rect x="0" y="0" width="230" height="92" rx="12" fill="rgba(8,12,28,0.65)" stroke="rgba(162,135,255,0.25)" />
+              <circle cx="52" cy="46" r="30" fill="rgba(162,135,255,0.08)" stroke="#a287ff" stroke-width="2" stroke-dasharray="6 6" />
+              <text x="100" y="38" font-size="16" fill="#efe8ff" font-weight="700">4 快问快答</text>
+              <text x="100" y="62" font-size="12" fill="#d6caff">盖章处</text>
+            </g>
+
+            <g transform="translate(930,520)">
+              <rect x="0" y="0" width="230" height="92" rx="12" fill="rgba(8,12,28,0.65)" stroke="rgba(255,78,205,0.25)" />
+              <circle cx="52" cy="46" r="30" fill="rgba(255,78,205,0.08)" stroke="#ff4ecd" stroke-width="2" stroke-dasharray="6 6" />
+              <text x="100" y="38" font-size="16" fill="#ffd7f3" font-weight="700">5 量子纠缠瓶</text>
+              <text x="100" y="62" font-size="12" fill="#ffc2ee">盖章处</text>
+            </g>
+          </g>
+
+          <!-- Small route labels -->
+          <g opacity="0.85">
+            <text class="route-label" x="320" y="220">— ROUTE —</text>
+            <text class="route-label" x="520" y="270">NAV-LINK</text>
+            <text class="route-label" x="760" y="230">WAYPOINT</text>
+          </g>
+
+          <!-- Decorative corner brackets / safety area -->
+          <g opacity="0.55">
+            <rect x="22" y="22" width="1156" height="796" rx="14" fill="none" stroke="rgba(57,225,255,0.25)" stroke-dasharray="10 10" />
+            <!-- corners -->
+            <path d="M22 70 L22 22 L70 22" stroke="rgba(122,92,255,0.6)" stroke-width="2"/>
+            <path d="M1148 22 L1178 22 L1178 52" stroke="rgba(57,225,255,0.6)" stroke-width="2"/>
+            <path d="M22 790 L22 818 L52 818" stroke="rgba(57,225,255,0.6)" stroke-width="2"/>
+            <path d="M1128 818 L1178 818 L1178 768" stroke="rgba(122,92,255,0.6)" stroke-width="2"/>
+          </g>
+        </svg>
+
+        <!-- soft glow overlays -->
+        <svg class="glow" viewBox="0 0 1200 840" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="spotGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#39e1ff" stop-opacity="0.25"/>
+              <stop offset="70%" stop-color="#39e1ff" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <circle cx="260" cy="200" r="80" fill="url(#spotGlow)"/>
+          <circle cx="480" cy="280" r="70" fill="url(#spotGlow)"/>
+          <circle cx="720" cy="240" r="70" fill="url(#spotGlow)"/>
+          <circle cx="860" cy="420" r="90" fill="url(#spotGlow)"/>
+          <circle cx="980" cy="300" r="80" fill="url(#spotGlow)"/>
+        </svg>
+      </div>
+
+      <div class="footer">
+        <div>集齐 5 枚印章可兑换礼品，印章须清晰可辨。</div>
+        <div class="print-note">建议打印尺寸：A5/A4，深色背景模式，边距“无”。</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
