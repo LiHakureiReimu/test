@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2480" height="3508" viewBox="0 0 2480 3508">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1020"/>
+      <stop offset="100%" stop-color="#0a1b3d"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#00E5FF"/>
+      <stop offset="100%" stop-color="#7C4DFF"/>
+    </linearGradient>
+    <linearGradient id="nodeGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#18FFFF"/>
+      <stop offset="100%" stop-color="#536DFE"/>
+    </linearGradient>
+    <filter id="glowStrong" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Subtle grid pattern -->
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M60 0 L0 0 0 60" fill="none" stroke="#1b2a52" stroke-width="1"/>
+      <circle cx="0" cy="0" r="1.2" fill="#223a74"/>
+    </pattern>
+
+    <!-- Stamp circle reusable symbol -->
+    <symbol id="stampSlot" viewBox="0 0 200 200">
+      <circle cx="100" cy="100" r="90" fill="#ffffff" fill-opacity="0.95"/>
+      <circle cx="100" cy="100" r="90" fill="none" stroke="#9AA7C7" stroke-width="2" stroke-dasharray="6 10"/>
+      <text x="100" y="105" text-anchor="middle" font-family="'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', Inter, system-ui, sans-serif" font-size="22" fill="#5b6b86">盖章区</text>
+    </symbol>
+
+    <!-- Rounded rect with glow for nodes -->
+    <symbol id="node" viewBox="0 0 520 200">
+      <rect x="0" y="0" width="520" height="200" rx="16" ry="16" fill="url(#grid)" stroke="url(#nodeGrad)" stroke-width="2.5"/>
+      <rect x="0" y="0" width="520" height="200" rx="16" ry="16" fill="none" stroke="#00E5FF" stroke-opacity="0.2" stroke-width="10" filter="url(#softGlow)"/>
+    </symbol>
+
+    <!-- Dashed path style -->
+    <style><![CDATA[
+      .title { font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', Inter, system-ui, sans-serif; fill: #E6F0FF; }
+      .subtitle { font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', Inter, system-ui, sans-serif; fill: #8AA4FF; }
+      .meta { font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', Inter, system-ui, sans-serif; fill: #9FB4FF; }
+      .label { font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', Inter, system-ui, sans-serif; fill: #DCE7FF; }
+      .small { font-size: 24px; fill: #8FA6D8; }
+      .connector { stroke: url(#accentGrad); stroke-width: 4; fill: none; filter: url(#softGlow); }
+      .connector-dash { stroke: #4BB7FF; stroke-width: 3; stroke-dasharray: 10 14; fill: none; opacity: 0.8; }
+      .chip { fill: none; stroke: #1E2F59; stroke-width: 2; }
+    ]]></style>
+  </defs>
+
+  <!-- Background -->
+  <rect x="0" y="0" width="2480" height="3508" fill="url(#bgGrad)"/>
+  <rect x="0" y="0" width="2480" height="3508" fill="url(#grid)" opacity="0.25"/>
+
+  <!-- Decorative circuits -->
+  <g opacity="0.25">
+    <path class="chip" d="M120 360 H2360 V420 H120 Z"/>
+    <path class="chip" d="M120 900 H2360"/>
+    <path class="chip" d="M120 1700 H2360"/>
+    <path class="chip" d="M120 2600 H2360"/>
+    <circle cx="2200" cy="480" r="6" fill="#2BD9FF"/>
+    <circle cx="280" cy="980" r="6" fill="#7C4DFF"/>
+    <circle cx="2200" cy="1780" r="6" fill="#2BD9FF"/>
+    <circle cx="300" cy="2680" r="6" fill="#7C4DFF"/>
+  </g>
+
+  <!-- Title -->
+  <g transform="translate(220, 200)">
+    <text class="title" font-weight="700" font-size="96">周年庆打卡地图</text>
+    <text class="subtitle" font-weight="500" font-size="40" y="88">Anniversary Tech Stamp Map</text>
+    <text class="meta small" y="148">提示：到达每个站点后，请在对应“盖章区”盖章。建议使用浅色或荧光色印章。</text>
+  </g>
+
+  <!-- Legend / info card -->
+  <g transform="translate(1720, 180)" filter="url(#glowStrong)">
+    <rect x="0" y="0" width="540" height="300" rx="20" fill="#0F1D3C" opacity="0.8" stroke="#2BD9FF" stroke-width="2"/>
+    <text x="32" y="60" class="label" font-size="36" font-weight="700">打卡说明</text>
+    <text x="32" y="110" class="small">- 连接线路仅为示意，可按任意顺序打卡</text>
+    <text x="32" y="150" class="small">- 每处都预留了清晰的“盖章区”</text>
+    <text x="32" y="190" class="small">- 建议打印：A4 竖版，深色底，留白区域勿覆膜</text>
+    <text x="32" y="230" class="small">- 电子盖章：可在白色圆区贴图或签章</text>
+  </g>
+
+  <!-- Connectors between nodes -->
+  <g>
+    <!-- Path coordinates roughly linking all five nodes -->
+    <path class="connector" d="M560 720 C 1040 640, 1460 640, 1920 760"/>
+    <path class="connector-dash" d="M1920 760 C 2040 980, 2060 1280, 1880 1500"/>
+    <path class="connector" d="M1880 1500 C 1600 1720, 1200 1820, 860 1780"/>
+    <path class="connector-dash" d="M860 1780 C 600 1980, 520 2280, 720 2540"/>
+    <path class="connector" d="M720 2540 C 1060 2860, 1500 2920, 1920 2760"/>
+  </g>
+
+  <!-- Nodes -->
+  <!-- 1 粘币游戏 -->
+  <g transform="translate(320, 620)" filter="url(#glowStrong)">
+    <use href="#node"/>
+    <text x="32" y="70" class="label" font-size="34" opacity="0.9">01</text>
+    <text x="90" y="70" class="label" font-size="34">粘币游戏</text>
+    <text x="32" y="114" class="small">完成挑战后盖章</text>
+    <g transform="translate(300, -10)">
+      <use href="#stampSlot"/>
+    </g>
+  </g>
+
+  <!-- 2 淘趣循环市集 -->
+  <g transform="translate(1680, 640)" filter="url(#glowStrong)">
+    <use href="#node"/>
+    <text x="32" y="70" class="label" font-size="34" opacity="0.9">02</text>
+    <text x="90" y="70" class="label" font-size="34">淘趣循环市集</text>
+    <text x="32" y="114" class="small">完成互动后盖章</text>
+    <g transform="translate(300, -10)">
+      <use href="#stampSlot"/>
+    </g>
+  </g>
+
+  <!-- 3 框住时光·与你同行 -->
+  <g transform="translate(1560, 1400)" filter="url(#glowStrong)">
+    <use href="#node"/>
+    <text x="32" y="70" class="label" font-size="34" opacity="0.9">03</text>
+    <text x="90" y="70" class="label" font-size="34">框住时光·与你同行</text>
+    <text x="32" y="114" class="small">拍照留念后盖章</text>
+    <g transform="translate(300, -10)">
+      <use href="#stampSlot"/>
+    </g>
+  </g>
+
+  <!-- 4 快问快答 -->
+  <g transform="translate(320, 1700)" filter="url(#glowStrong)">
+    <use href="#node"/>
+    <text x="32" y="70" class="label" font-size="34" opacity="0.9">04</text>
+    <text x="90" y="70" class="label" font-size="34">快问快答</text>
+    <text x="32" y="114" class="small">答题完成后盖章</text>
+    <g transform="translate(300, -10)">
+      <use href="#stampSlot"/>
+    </g>
+  </g>
+
+  <!-- 5 量子纠缠瓶 -->
+  <g transform="translate(1560, 2480)" filter="url(#glowStrong)">
+    <use href="#node"/>
+    <text x="32" y="70" class="label" font-size="34" opacity="0.9">05</text>
+    <text x="90" y="70" class="label" font-size="34">量子纠缠瓶</text>
+    <text x="32" y="114" class="small">完成互动后盖章</text>
+    <g transform="translate(300, -10)">
+      <use href="#stampSlot"/>
+    </g>
+  </g>
+
+  <!-- Footer / completion area -->
+  <g transform="translate(220, 3080)" filter="url(#softGlow)">
+    <rect x="0" y="0" width="2040" height="260" rx="20" fill="#0F1D3C" opacity="0.8" stroke="#2BD9FF" stroke-width="2"/>
+    <text x="40" y="84" class="label" font-size="40" font-weight="700">集章奖励</text>
+    <text x="40" y="140" class="small">集齐 5 枚章后，至服务台兑换礼品。请在此处由工作人员签字确认：</text>
+    <rect x="880" y="84" width="1080" height="120" rx="12" fill="#ffffff" fill-opacity="0.95" stroke="#9AA7C7" stroke-width="2" stroke-dasharray="6 10"/>
+  </g>
+</svg>
