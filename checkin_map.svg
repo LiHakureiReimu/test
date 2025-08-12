@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Anniversary Check-in Map (科技感) -->
+<svg width="1000" height="1000" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!-- Background -->
+  <rect x="0" y="0" width="1000" height="1000" fill="#0B0D14" />
+
+  <!-- Grid lines -->
+  <g stroke="#1F2933" stroke-width="1">
+    <!-- Vertical lines -->
+    <!-- 0 to 1000 every 100 -->
+    <path d="M100 0 V1000" />
+    <path d="M200 0 V1000" />
+    <path d="M300 0 V1000" />
+    <path d="M400 0 V1000" />
+    <path d="M500 0 V1000" />
+    <path d="M600 0 V1000" />
+    <path d="M700 0 V1000" />
+    <path d="M800 0 V1000" />
+    <path d="M900 0 V1000" />
+    <!-- Horizontal lines -->
+    <path d="M0 100 H1000" />
+    <path d="M0 200 H1000" />
+    <path d="M0 300 H1000" />
+    <path d="M0 400 H1000" />
+    <path d="M0 500 H1000" />
+    <path d="M0 600 H1000" />
+    <path d="M0 700 H1000" />
+    <path d="M0 800 H1000" />
+    <path d="M0 900 H1000" />
+  </g>
+
+  <!-- Paths connecting the nodes (dashed) -->
+  <g stroke="#08F7FE" stroke-width="2" stroke-dasharray="8 6" fill="none">
+    <polyline points="100,100 800,150 200,500 700,600 400,900" />
+  </g>
+
+  <!-- Activity nodes -->
+  <g fill="#08F7FE" stroke="white" stroke-width="2">
+    <!-- 粘币游戏 -->
+    <circle cx="100" cy="100" r="20" />
+    <!-- 淘趣循环市集 -->
+    <circle cx="800" cy="150" r="20" />
+    <!-- 框住时光·与你同行 -->
+    <circle cx="200" cy="500" r="20" />
+    <!-- 快问快答 -->
+    <circle cx="700" cy="600" r="20" />
+    <!-- 量子纠缠瓶 -->
+    <circle cx="400" cy="900" r="20" />
+  </g>
+
+  <!-- Labels -->
+  <g font-family="Arial, sans-serif" font-size="28" fill="white" text-anchor="middle">
+    <text x="100" y="70">粘币游戏</text>
+    <text x="800" y="120">淘趣循环市集</text>
+    <text x="200" y="470">框住时光·与你同行</text>
+    <text x="700" y="570">快问快答</text>
+    <text x="400" y="870">量子纠缠瓶</text>
+  </g>
+
+  <!-- Stamp area -->
+  <g stroke="#F50157" stroke-width="3" stroke-dasharray="12 8" fill="none">
+    <rect x="800" y="800" width="200" height="200" />
+  </g>
+  <text x="900" y="910" font-family="Arial, sans-serif" font-size="32" fill="#F50157" text-anchor="middle" dominant-baseline="middle">盖章区</text>
+</svg>
