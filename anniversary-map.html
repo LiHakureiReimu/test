@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>周年庆科技打卡地图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 背景动画粒子 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(0, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px);
+                opacity: 0;
+            }
+        }
+
+        /* 主容器 */
+        .map-container {
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
+            background: rgba(20, 25, 45, 0.9);
+            border: 2px solid #00ffff;
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.3),
+                        inset 0 0 30px rgba(0, 255, 255, 0.1);
+            position: relative;
+            z-index: 10;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* 标题 */
+        .map-title {
+            text-align: center;
+            color: #00ffff;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            letter-spacing: 3px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            }
+            to {
+                text-shadow: 0 0 30px rgba(0, 255, 255, 1),
+                            0 0 40px rgba(0, 255, 255, 0.8);
+            }
+        }
+
+        /* 地图区域 */
+        .map-area {
+            position: relative;
+            width: 100%;
+            height: calc(100% - 100px);
+            background: radial-gradient(ellipse at center, 
+                        rgba(0, 255, 255, 0.05) 0%, 
+                        transparent 70%);
+            border-radius: 15px;
+        }
+
+        /* 连接线 */
+        .connection-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .connection-line {
+            stroke: #00ffff;
+            stroke-width: 2;
+            fill: none;
+            opacity: 0.3;
+            stroke-dasharray: 5, 5;
+            animation: dash 20s linear infinite;
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -100;
+            }
+        }
+
+        /* 打卡点 */
+        .checkpoint {
+            position: absolute;
+            width: 180px;
+            height: 200px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkpoint:hover {
+            transform: scale(1.1);
+            z-index: 100;
+        }
+
+        /* 打卡点卡片 */
+        .checkpoint-card {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                        rgba(0, 255, 255, 0.1) 0%, 
+                        rgba(0, 150, 255, 0.1) 100%);
+            border: 2px solid #00ffff;
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .checkpoint:hover .checkpoint-card {
+            background: linear-gradient(135deg, 
+                        rgba(0, 255, 255, 0.2) 0%, 
+                        rgba(0, 150, 255, 0.2) 100%);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+        }
+
+        /* 打卡点编号 */
+        .checkpoint-number {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #00ffff, #0096ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0a0e27;
+            font-weight: bold;
+            font-size: 1.2em;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+        }
+
+        /* 打卡点图标 */
+        .checkpoint-icon {
+            width: 60px;
+            height: 60px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            background: rgba(0, 255, 255, 0.1);
+            border: 2px solid #00ffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+            }
+        }
+
+        /* 打卡点名称 */
+        .checkpoint-name {
+            color: #ffffff;
+            font-size: 0.9em;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        /* 盖章区域 */
+        .stamp-area {
+            width: 70px;
+            height: 70px;
+            border: 2px dashed rgba(0, 255, 255, 0.5);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(0, 255, 255, 0.5);
+            font-size: 0.8em;
+            background: rgba(0, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .stamp-area.stamped {
+            background: rgba(0, 255, 0, 0.2);
+            border-color: #00ff00;
+            animation: stampEffect 0.5s ease;
+        }
+
+        @keyframes stampEffect {
+            0% {
+                transform: scale(1.3);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .stamp-area.stamped::after {
+            content: '✓';
+            color: #00ff00;
+            font-size: 2em;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
+        }
+
+        /* 位置设置 */
+        #checkpoint1 { top: 20%; left: 15%; }
+        #checkpoint2 { top: 10%; right: 25%; }
+        #checkpoint3 { bottom: 30%; left: 50%; transform: translateX(-50%); }
+        #checkpoint4 { bottom: 20%; left: 20%; }
+        #checkpoint5 { bottom: 15%; right: 15%; }
+
+        /* 扫描线动画 */
+        .scan-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                        transparent, 
+                        rgba(0, 255, 255, 0.8), 
+                        transparent);
+            top: 0;
+            animation: scan 3s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            0% {
+                top: 0;
+            }
+            100% {
+                top: 100%;
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .map-title {
+                font-size: 1.8em;
+            }
+            
+            .checkpoint {
+                width: 140px;
+                height: 160px;
+            }
+            
+            .checkpoint-card {
+                padding: 10px;
+            }
+            
+            .checkpoint-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2em;
+            }
+            
+            .stamp-area {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        /* 完成提示 */
+        .completion-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: linear-gradient(135deg, #00ffff, #0096ff);
+            color: #0a0e27;
+            padding: 30px 50px;
+            border-radius: 20px;
+            font-size: 1.5em;
+            font-weight: bold;
+            z-index: 1000;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.8);
+            transition: transform 0.5s ease;
+        }
+
+        .completion-message.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景粒子效果 -->
+    <div class="particles" id="particles"></div>
+
+    <!-- 主容器 -->
+    <div class="map-container">
+        <h1 class="map-title">🎉 周年庆科技打卡地图 🎉</h1>
+        
+        <div class="map-area">
+            <!-- 扫描线 -->
+            <div class="scan-line"></div>
+            
+            <!-- 连接线 SVG -->
+            <svg class="connection-lines">
+                <line class="connection-line" x1="25%" y1="35%" x2="75%" y2="25%" />
+                <line class="connection-line" x1="75%" y1="25%" x2="50%" y2="70%" />
+                <line class="connection-line" x1="50%" y1="70%" x2="30%" y2="80%" />
+                <line class="connection-line" x1="30%" y1="80%" x2="85%" y2="85%" />
+                <line class="connection-line" x1="25%" y1="35%" x2="30%" y2="80%" />
+            </svg>
+
+            <!-- 打卡点1：粘币游戏 -->
+            <div class="checkpoint" id="checkpoint1">
+                <div class="checkpoint-card">
+                    <div class="checkpoint-number">1</div>
+                    <div class="checkpoint-icon">🎮</div>
+                    <div class="checkpoint-name">粘币游戏</div>
+                    <div class="stamp-area" onclick="stamp(this)">盖章</div>
+                </div>
+            </div>
+
+            <!-- 打卡点2：淘趣循环市集 -->
+            <div class="checkpoint" id="checkpoint2">
+                <div class="checkpoint-card">
+                    <div class="checkpoint-number">2</div>
+                    <div class="checkpoint-icon">🛍️</div>
+                    <div class="checkpoint-name">淘趣循环市集</div>
+                    <div class="stamp-area" onclick="stamp(this)">盖章</div>
+                </div>
+            </div>
+
+            <!-- 打卡点3：框住时光·与你同行 -->
+            <div class="checkpoint" id="checkpoint3">
+                <div class="checkpoint-card">
+                    <div class="checkpoint-number">3</div>
+                    <div class="checkpoint-icon">📸</div>
+                    <div class="checkpoint-name">框住时光·与你同行</div>
+                    <div class="stamp-area" onclick="stamp(this)">盖章</div>
+                </div>
+            </div>
+
+            <!-- 打卡点4：快问快答 -->
+            <div class="checkpoint" id="checkpoint4">
+                <div class="checkpoint-card">
+                    <div class="checkpoint-number">4</div>
+                    <div class="checkpoint-icon">❓</div>
+                    <div class="checkpoint-name">快问快答</div>
+                    <div class="stamp-area" onclick="stamp(this)">盖章</div>
+                </div>
+            </div>
+
+            <!-- 打卡点5：量子纠缠瓶 -->
+            <div class="checkpoint" id="checkpoint5">
+                <div class="checkpoint-card">
+                    <div class="checkpoint-number">5</div>
+                    <div class="checkpoint-icon">⚛️</div>
+                    <div class="checkpoint-name">量子纠缠瓶</div>
+                    <div class="stamp-area" onclick="stamp(this)">盖章</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 完成提示 -->
+    <div class="completion-message" id="completionMessage">
+        🎊 恭喜完成所有打卡！🎊
+    </div>
+
+    <script>
+        // 创建背景粒子
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 盖章功能
+        let stampedCount = 0;
+        const totalCheckpoints = 5;
+
+        function stamp(element) {
+            if (!element.classList.contains('stamped')) {
+                element.classList.add('stamped');
+                element.innerHTML = '';
+                stampedCount++;
+                
+                // 播放音效（可选）
+                playStampSound();
+                
+                // 检查是否完成所有打卡
+                if (stampedCount === totalCheckpoints) {
+                    showCompletionMessage();
+                }
+            }
+        }
+
+        // 播放盖章音效（模拟）
+        function playStampSound() {
+            // 创建一个简单的音效
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 800;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+        // 显示完成消息
+        function showCompletionMessage() {
+            setTimeout(() => {
+                const message = document.getElementById('completionMessage');
+                message.classList.add('show');
+                
+                // 3秒后隐藏消息
+                setTimeout(() => {
+                    message.classList.remove('show');
+                }, 3000);
+            }, 500);
+        }
+
+        // 添加鼠标跟随光效
+        document.addEventListener('mousemove', (e) => {
+            const checkpoints = document.querySelectorAll('.checkpoint');
+            checkpoints.forEach(checkpoint => {
+                const rect = checkpoint.getBoundingClientRect();
+                const x = rect.left + rect.width / 2;
+                const y = rect.top + rect.height / 2;
+                const distance = Math.sqrt(Math.pow(e.clientX - x, 2) + Math.pow(e.clientY - y, 2));
+                
+                if (distance < 200) {
+                    const intensity = 1 - (distance / 200);
+                    checkpoint.style.filter = `brightness(${1 + intensity * 0.3})`;
+                } else {
+                    checkpoint.style.filter = 'brightness(1)';
+                }
+            });
+        });
+
+        // 初始化
+        window.onload = function() {
+            createParticles();
+            
+            // 添加加载动画
+            const checkpoints = document.querySelectorAll('.checkpoint');
+            checkpoints.forEach((checkpoint, index) => {
+                setTimeout(() => {
+                    checkpoint.style.opacity = '0';
+                    checkpoint.style.transform = 'scale(0)';
+                    setTimeout(() => {
+                        checkpoint.style.transition = 'all 0.5s ease';
+                        checkpoint.style.opacity = '1';
+                        checkpoint.style.transform = 'scale(1)';
+                    }, 100);
+                }, index * 100);
+            });
+        };
+
+        // 添加键盘快捷键（数字键1-5快速打卡）
+        document.addEventListener('keypress', (e) => {
+            const key = e.key;
+            if (key >= '1' && key <= '5') {
+                const checkpointId = 'checkpoint' + key;
+                const stampArea = document.querySelector(`#${checkpointId} .stamp-area`);
+                if (stampArea && !stampArea.classList.contains('stamped')) {
+                    stamp(stampArea);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
