@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>周年庆打卡地图 - 科技探索之旅</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .title {
+            font-family: 'Orbitron', monospace;
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #00f5ff, #0099ff, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(0, 245, 255, 0.5);
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #88c0d0;
+            opacity: 0.9;
+            letter-spacing: 2px;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(0, 245, 255, 0.5); }
+            to { text-shadow: 0 0 30px rgba(0, 245, 255, 0.8); }
+        }
+
+        .map-container {
+            position: relative;
+            width: 100%;
+            height: 80vh;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 245, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0, 153, 255, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, rgba(22, 33, 62, 0.8) 0%, rgba(10, 10, 10, 0.9) 100%);
+            border-radius: 20px;
+            border: 2px solid rgba(0, 245, 255, 0.3);
+            box-shadow: 
+                0 0 50px rgba(0, 245, 255, 0.2),
+                inset 0 0 50px rgba(0, 153, 255, 0.1);
+            overflow: hidden;
+        }
+
+        .map-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 245, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .checkpoint {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.2), rgba(0, 153, 255, 0.2));
+            border: 2px solid #00f5ff;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 0 20px rgba(0, 245, 255, 0.4),
+                inset 0 0 20px rgba(0, 245, 255, 0.1);
+        }
+
+        .checkpoint:hover {
+            transform: scale(1.1);
+            box-shadow: 
+                0 0 40px rgba(0, 245, 255, 0.6),
+                inset 0 0 30px rgba(0, 245, 255, 0.2);
+            border-color: #00ccff;
+        }
+
+        .checkpoint::before {
+            content: '';
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .checkpoint-number {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00f5ff;
+            margin-bottom: 5px;
+        }
+
+        .checkpoint-name {
+            font-size: 0.8rem;
+            color: #ffffff;
+            text-align: center;
+            line-height: 1.2;
+            font-weight: 500;
+        }
+
+        .stamp-area {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border: 2px dashed rgba(0, 245, 255, 0.5);
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.6);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stamp-area:hover {
+            border-color: #00f5ff;
+            background: rgba(0, 245, 255, 0.1);
+            color: #ffffff;
+        }
+
+        /* 位置布局 */
+        .checkpoint-1 {
+            top: 15%;
+            left: 20%;
+        }
+
+        .checkpoint-2 {
+            top: 25%;
+            right: 15%;
+        }
+
+        .checkpoint-3 {
+            top: 45%;
+            left: 15%;
+        }
+
+        .checkpoint-4 {
+            bottom: 25%;
+            right: 20%;
+        }
+
+        .checkpoint-5 {
+            bottom: 15%;
+            left: 35%;
+        }
+
+        .stamp-1 {
+            top: 10%;
+            left: 35%;
+        }
+
+        .stamp-2 {
+            top: 35%;
+            right: 35%;
+        }
+
+        .stamp-3 {
+            top: 55%;
+            left: 35%;
+        }
+
+        .stamp-4 {
+            bottom: 35%;
+            right: 40%;
+        }
+
+        .stamp-5 {
+            bottom: 10%;
+            left: 55%;
+        }
+
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(0, 245, 255, 0.3) 20%, 
+                rgba(0, 245, 255, 0.6) 50%, 
+                rgba(0, 245, 255, 0.3) 80%, 
+                transparent 100%);
+            animation: lineFlow 3s ease-in-out infinite;
+        }
+
+        @keyframes lineFlow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.8; }
+        }
+
+        .progress-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-text {
+            color: #00f5ff;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00f5ff, #00ccff);
+            width: 0%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .checkpoint {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .checkpoint-name {
+                font-size: 0.7rem;
+            }
+            
+            .stamp-area {
+                width: 60px;
+                height: 60px;
+                font-size: 0.6rem;
+            }
+            
+            .progress-indicator {
+                position: relative;
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .progress-bar {
+                width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">周年庆探索地图</h1>
+            <p class="subtitle">科技之旅 · 五站打卡</p>
+        </div>
+
+        <div class="map-container">
+            <div class="map-grid"></div>
+            
+            <!-- 进度指示器 -->
+            <div class="progress-indicator">
+                <div class="progress-text">探索进度: <span id="progress-count">0</span>/5</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+
+            <!-- 打卡点 -->
+            <div class="checkpoint checkpoint-1" data-checkpoint="1">
+                <div class="checkpoint-number">01</div>
+                <div class="checkpoint-name">粘币游戏</div>
+            </div>
+
+            <div class="checkpoint checkpoint-2" data-checkpoint="2">
+                <div class="checkpoint-number">02</div>
+                <div class="checkpoint-name">淘趣循环市集</div>
+            </div>
+
+            <div class="checkpoint checkpoint-3" data-checkpoint="3">
+                <div class="checkpoint-number">03</div>
+                <div class="checkpoint-name">框住时光·<br>与你同行</div>
+            </div>
+
+            <div class="checkpoint checkpoint-4" data-checkpoint="4">
+                <div class="checkpoint-number">04</div>
+                <div class="checkpoint-name">快问快答</div>
+            </div>
+
+            <div class="checkpoint checkpoint-5" data-checkpoint="5">
+                <div class="checkpoint-number">05</div>
+                <div class="checkpoint-name">量子纠缠瓶</div>
+            </div>
+
+            <!-- 盖章区域 -->
+            <div class="stamp-area stamp-1">
+                <div>盖章区域<br>01</div>
+            </div>
+
+            <div class="stamp-area stamp-2">
+                <div>盖章区域<br>02</div>
+            </div>
+
+            <div class="stamp-area stamp-3">
+                <div>盖章区域<br>03</div>
+            </div>
+
+            <div class="stamp-area stamp-4">
+                <div>盖章区域<br>04</div>
+            </div>
+
+            <div class="stamp-area stamp-5">
+                <div>盖章区域<br>05</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 打卡交互功能
+        let checkedPoints = new Set();
+        const checkpoints = document.querySelectorAll('.checkpoint');
+        const progressCount = document.getElementById('progress-count');
+        const progressFill = document.getElementById('progress-fill');
+
+        checkpoints.forEach(checkpoint => {
+            checkpoint.addEventListener('click', function() {
+                const pointNumber = this.dataset.checkpoint;
+                
+                if (checkedPoints.has(pointNumber)) {
+                    // 取消打卡
+                    checkedPoints.delete(pointNumber);
+                    this.style.background = 'linear-gradient(135deg, rgba(0, 245, 255, 0.2), rgba(0, 153, 255, 0.2))';
+                    this.style.borderColor = '#00f5ff';
+                } else {
+                    // 完成打卡
+                    checkedPoints.add(pointNumber);
+                    this.style.background = 'linear-gradient(135deg, rgba(0, 255, 0, 0.3), rgba(0, 200, 0, 0.3))';
+                    this.style.borderColor = '#00ff00';
+                    
+                    // 添加完成动画
+                    this.style.transform = 'scale(1.2)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 200);
+                }
+                
+                // 更新进度
+                updateProgress();
+            });
+        });
+
+        function updateProgress() {
+            const count = checkedPoints.size;
+            progressCount.textContent = count;
+            progressFill.style.width = (count / 5 * 100) + '%';
+            
+            if (count === 5) {
+                // 全部完成时的特效
+                document.querySelector('.title').style.animation = 'glow 0.5s ease-in-out infinite alternate';
+                setTimeout(() => {
+                    alert('🎉 恭喜！您已完成所有打卡点的探索！');
+                }, 500);
+            }
+        }
+
+        // 添加粒子效果
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.style.position = 'absolute';
+            particle.style.width = '2px';
+            particle.style.height = '2px';
+            particle.style.background = '#00f5ff';
+            particle.style.borderRadius = '50%';
+            particle.style.pointerEvents = 'none';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animation = 'particleFloat 4s linear infinite';
+            particle.style.opacity = Math.random();
+            
+            document.querySelector('.map-container').appendChild(particle);
+            
+            setTimeout(() => {
+                particle.remove();
+            }, 4000);
+        }
+
+        // 添加粒子动画样式
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes particleFloat {
+                0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+                10% { opacity: 1; }
+                90% { opacity: 1; }
+                100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 定期创建粒子
+        setInterval(createParticle, 500);
+    </script>
+</body>
+</html>
