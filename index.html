@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>周年庆打卡地图</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">🎉 周年庆打卡地图</h1>
+            <div class="subtitle">探索精彩，收集印章</div>
+        </header>
+        
+        <div class="map-container">
+            <div class="map-grid">
+                <!-- 粘币游戏 -->
+                <div class="location-card" data-location="1">
+                    <div class="location-icon">🎮</div>
+                    <h3>粘币游戏</h3>
+                    <div class="stamp-area">
+                        <div class="stamp-placeholder">盖章区域</div>
+                    </div>
+                </div>
+                
+                <!-- 淘趣循环市集 -->
+                <div class="location-card" data-location="2">
+                    <div class="location-icon">🛍️</div>
+                    <h3>淘趣循环市集</h3>
+                    <div class="stamp-area">
+                        <div class="stamp-placeholder">盖章区域</div>
+                    </div>
+                </div>
+                
+                <!-- 框住时光·与你同行 -->
+                <div class="location-card" data-location="3">
+                    <div class="location-icon">📸</div>
+                    <h3>框住时光·与你同行</h3>
+                    <div class="stamp-area">
+                        <div class="stamp-placeholder">盖章区域</div>
+                    </div>
+                </div>
+                
+                <!-- 快问快答 -->
+                <div class="location-card" data-location="4">
+                    <div class="location-icon">❓</div>
+                    <h3>快问快答</h3>
+                    <div class="stamp-area">
+                        <div class="stamp-placeholder">盖章区域</div>
+                    </div>
+                </div>
+                
+                <!-- 量子纠缠瓶 -->
+                <div class="location-card" data-location="5">
+                    <div class="location-icon">🔮</div>
+                    <h3>量子纠缠瓶</h3>
+                    <div class="stamp-area">
+                        <div class="stamp-placeholder">盖章区域</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 连接线装饰 -->
+            <div class="connection-lines">
+                <div class="line line-1"></div>
+                <div class="line line-2"></div>
+                <div class="line line-3"></div>
+                <div class="line line-4"></div>
+            </div>
+        </div>
+        
+        <div class="progress-section">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text">打卡进度: <span id="progressCount">0</span>/5</div>
+        </div>
+        
+        <div class="instructions">
+            <h3>📋 打卡说明</h3>
+            <ul>
+                <li>完成每个活动后，工作人员会在对应区域盖章</li>
+                <li>集齐5个印章即可获得周年庆特别奖励</li>
+                <li>每个打卡点都有独特的体验，不要错过哦！</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
