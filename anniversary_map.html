@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>周年庆打卡地图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .map-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .title {
+            font-size: 2.5em;
+            color: #00ffff;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            color: #ffffff;
+            font-size: 1.2em;
+            opacity: 0.8;
+        }
+
+        .map-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .checkpoint {
+            background: linear-gradient(145deg, rgba(0, 255, 255, 0.1), rgba(0, 0, 255, 0.1));
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .checkpoint:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+            border-color: rgba(0, 255, 255, 0.6);
+        }
+
+        .checkpoint.completed {
+            background: linear-gradient(145deg, rgba(0, 255, 0, 0.2), rgba(0, 200, 0, 0.1));
+            border-color: rgba(0, 255, 0, 0.6);
+        }
+
+        .checkpoint-number {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        .checkpoint-name {
+            color: #ffffff;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .stamp-area {
+            width: 60px;
+            height: 60px;
+            border: 2px dashed rgba(0, 255, 255, 0.5);
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stamp-area:hover {
+            border-color: rgba(0, 255, 255, 0.8);
+            background: rgba(0, 255, 255, 0.1);
+        }
+
+        .stamp-area.completed {
+            background: linear-gradient(45deg, #00ff00, #00cc00);
+            border-color: #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+        }
+
+        .stamp-area.completed::after {
+            content: "✓";
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .stamp-text {
+            color: rgba(0, 255, 255, 0.6);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .stamp-area.completed .stamp-text {
+            display: none;
+        }
+
+        .instructions {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .instructions h3 {
+            color: #00ffff;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .instructions p {
+            color: #ffffff;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .download-btn {
+            display: block;
+            width: 200px;
+            margin: 30px auto 0;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 255, 255, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .map-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .title {
+                font-size: 2em;
+            }
+            
+            .map-container {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .map-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="map-container">
+        <div class="header">
+            <h1 class="title">周年庆打卡地图</h1>
+            <p class="subtitle">探索精彩活动，收集专属印章</p>
+        </div>
+
+        <div class="map-grid">
+            <div class="checkpoint" onclick="toggleCheckpoint(this)">
+                <div class="checkpoint-number">1</div>
+                <div class="checkpoint-name">粘币游戏</div>
+                <div class="stamp-area">
+                    <span class="stamp-text">盖章处</span>
+                </div>
+            </div>
+
+            <div class="checkpoint" onclick="toggleCheckpoint(this)">
+                <div class="checkpoint-number">2</div>
+                <div class="checkpoint-name">淘趣循环市集</div>
+                <div class="stamp-area">
+                    <span class="stamp-text">盖章处</span>
+                </div>
+            </div>
+
+            <div class="checkpoint" onclick="toggleCheckpoint(this)">
+                <div class="checkpoint-number">3</div>
+                <div class="checkpoint-name">框住时光·与你同行</div>
+                <div class="stamp-area">
+                    <span class="stamp-text">盖章处</span>
+                </div>
+            </div>
+
+            <div class="checkpoint" onclick="toggleCheckpoint(this)">
+                <div class="checkpoint-number">4</div>
+                <div class="checkpoint-name">快问快答</div>
+                <div class="stamp-area">
+                    <span class="stamp-text">盖章处</span>
+                </div>
+            </div>
+
+            <div class="checkpoint" onclick="toggleCheckpoint(this)">
+                <div class="checkpoint-number">5</div>
+                <div class="checkpoint-name">量子纠缠瓶</div>
+                <div class="stamp-area">
+                    <span class="stamp-text">盖章处</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>使用说明</h3>
+            <p>点击打卡点可以切换完成状态，完成所有打卡后可以下载地图作为纪念。</p>
+        </div>
+
+        <a href="#" class="download-btn" onclick="downloadMap()">下载地图</a>
+    </div>
+
+    <script>
+        function toggleCheckpoint(element) {
+            const stampArea = element.querySelector('.stamp-area');
+            const isCompleted = stampArea.classList.contains('completed');
+            
+            if (isCompleted) {
+                stampArea.classList.remove('completed');
+                element.classList.remove('completed');
+            } else {
+                stampArea.classList.add('completed');
+                element.classList.add('completed');
+            }
+        }
+
+        function downloadMap() {
+            // 创建一个新的canvas来绘制地图
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // 设置canvas尺寸
+            canvas.width = 1200;
+            canvas.height = 800;
+            
+            // 绘制背景
+            const gradient = ctx.createLinearGradient(0, 0, 1200, 800);
+            gradient.addColorStop(0, '#0c0c0c');
+            gradient.addColorStop(0.5, '#1a1a2e');
+            gradient.addColorStop(1, '#16213e');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1200, 800);
+            
+            // 绘制标题
+            ctx.fillStyle = '#00ffff';
+            ctx.font = 'bold 48px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('周年庆打卡地图', 600, 80);
+            
+            // 绘制副标题
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '24px Arial';
+            ctx.fillText('探索精彩活动，收集专属印章', 600, 120);
+            
+            // 绘制打卡点
+            const checkpoints = [
+                {name: '1. 粘币游戏', x: 200, y: 250},
+                {name: '2. 淘趣循环市集', x: 600, y: 250},
+                {name: '3. 框住时光·与你同行', x: 1000, y: 250},
+                {name: '4. 快问快答', x: 400, y: 450},
+                {name: '5. 量子纠缠瓶', x: 800, y: 450}
+            ];
+            
+            checkpoints.forEach((checkpoint, index) => {
+                // 绘制打卡点背景
+                ctx.fillStyle = 'rgba(0, 255, 255, 0.1)';
+                ctx.strokeStyle = 'rgba(0, 255, 255, 0.3)';
+                ctx.lineWidth = 2;
+                
+                // 绘制圆形背景
+                ctx.beginPath();
+                ctx.arc(checkpoint.x, checkpoint.y, 80, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.stroke();
+                
+                // 绘制编号
+                ctx.fillStyle = '#00ffff';
+                ctx.font = 'bold 20px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(checkpoint.name, checkpoint.x, checkpoint.y + 120);
+                
+                // 绘制盖章区域
+                ctx.strokeStyle = 'rgba(0, 255, 255, 0.5)';
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.arc(checkpoint.x, checkpoint.y, 40, 0, 2 * Math.PI);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // 绘制盖章处文字
+                ctx.fillStyle = 'rgba(0, 255, 255, 0.6)';
+                ctx.font = '14px Arial';
+                ctx.fillText('盖章处', checkpoint.x, checkpoint.y + 5);
+            });
+            
+            // 绘制说明文字
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '18px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('完成所有打卡后，请在此处盖章留念', 600, 650);
+            
+            // 创建下载链接
+            const link = document.createElement('a');
+            link.download = '周年庆打卡地图.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+    </script>
+</body>
+</html>
